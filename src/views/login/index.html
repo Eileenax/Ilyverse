@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ilyverse - Iniciar Sesión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-[#0f0c1b] text-[#f3f0ff] min-h-screen flex flex-col font-sans"
+  >
+    <!-- Navbar simplificada -->
+    <nav
+      class="flex justify-between items-center px-8 py-6 border-b border-[#c77dff]/20"
+    >
+      <a href="/" class="text-2xl font-bold tracking-wide">
+        <span
+          class="text-[#c77dff] drop-shadow-[0_0_10px_rgba(199,125,255,0.5)]"
+          >ily</span
+        >verse
+      </a>
+      <a
+        href="/signup"
+        class="text-sm font-semibold text-[#a09abc] hover:text-[#c77dff] transition-all"
+        >¿No tienes cuenta? Regístrate</a
+      >
+    </nav>
+
+    <!-- Formulario de Login -->
+    <main class="flex-1 flex justify-center items-center p-6">
+      <div
+        class="w-full max-w-md bg-[#1a162b] p-8 rounded-2xl border border-[#c77dff]/20 shadow-[0_0_25px_rgba(157,78,221,0.15)]"
+      >
+        <h2 class="text-3xl font-extrabold text-center mb-2">Iniciar Sesión</h2>
+        <p class="text-[#a09abc] text-center text-sm mb-6">
+          Ingresa para acceder a tu panel
+        </p>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1 text-[#f3f0ff]"
+              >Correo Electrónico</label
+            >
+            <input
+              type="email"
+              placeholder="tu@email.com"
+              required
+              class="w-full px-4 py-2.5 rounded-lg bg-[#0f0c1b] border border-[#c77dff]/30 text-[#f3f0ff] focus:outline-none focus:border-[#c77dff] focus:ring-1 focus:ring-[#c77dff] transition-all"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1 text-[#f3f0ff]"
+              >Contraseña</label
+            >
+            <input
+              type="password"
+              placeholder="••••••••"
+              required
+              class="w-full px-4 py-2.5 rounded-lg bg-[#0f0c1b] border border-[#c77dff]/30 text-[#f3f0ff] focus:outline-none focus:border-[#c77dff] focus:ring-1 focus:ring-[#c77dff] transition-all"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 mt-2 rounded-lg font-semibold bg-gradient-to-r from-[#9d4edd] to-[#c77dff] text-white shadow-[0_0_15px_rgba(157,78,221,0.4)] hover:shadow-[0_0_20px_rgba(199,125,255,0.7)] transition-all"
+          >
+            Ingresar
+          </button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
