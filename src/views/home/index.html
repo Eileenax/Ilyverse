@@ -4,65 +4,94 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ilyverse - Stream Hub</title>
-    <!-- cdn de tailwind css -->
+    
+  
+    <link rel="icon" type="image/png" href="/multimedia/icon.png" />
+
+    <!-- CDN de Tailwind CSS y fuentes pixel art -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+
+   
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'pixel-base': ['Silkscreen', 'sans-serif'],
+              'pixel-logo': ['"Press Start 2P"', 'cursive'],
+            },
+            colors: {
+              'ily-purple': {
+                100: '#f3f0ff',
+                300: '#c77dff',
+                500: '#9d4edd',
+              },
+              'ily-dark': '#0f0c1b',
+            },
+            backgroundImage: {
+            
+              'cyberpunk-city': "linear-gradient(rgba(15, 12, 27, 0.4), rgba(15, 12, 27, 0.6)), url('/multimedia/background.gif')",
+            },
+            dropShadow: {
+              'neon-purple-lg': '0 0 20px rgba(199, 125, 255, 1)',
+            },
+            boxShadow: {
+              'neon-border': '0 0 15px rgba(199, 125, 255, 0.5)',
+              'neon-border-hover': '0 0 25px rgba(199, 125, 255, 0.9)',
+              'neon-btn': '0 0 15px rgba(157, 78, 221, 0.6)',
+              'neon-btn-hover': '0 0 25px rgba(199, 125, 255, 0.9)',
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body
-    class="bg-[#0f0c1b] text-[#f3f0ff] min-h-screen flex flex-col font-sans"
-  >
-    <!-- navbar -->
-    <nav
-      class="flex justify-between items-center px-8 py-6 border-b border-[#c77dff]/20"
-    >
-      <div class="text-2xl font-bold tracking-wide">
-        <span
-          class="text-[#c77dff] drop-shadow-[0_0_10px_rgba(199,125,255,0.5)]"
-          >ily</span
-        >verse
-      </div>
-      <div class="flex gap-4">
-        <a
-          href="/login"
-          class="px-5 py-2 rounded-lg font-semibold border border-[#c77dff]/30 text-[#f3f0ff] hover:bg-[#c77dff]/10 hover:border-[#c77dff] transition-all"
-          >Iniciar sesión</a
-        >
-        <a
-          href="/signup"
-          class="px-5 py-2 rounded-lg font-semibold bg-gradient-to-r from-[#9d4edd] to-[#c77dff] text-white shadow-[0_0_15px_rgba(157,78,221,0.4)] hover:shadow-[0_0_20px_rgba(199,125,255,0.7)] hover:-translate-y-0.5 transition-all"
-          >Registrarse</a
-        >
+  <body class="bg-ily-dark text-ily-purple-100 font-pixel-base min-h-screen flex flex-col bg-cyberpunk-city bg-cover bg-center bg-no-repeat bg-fixed">
+    
+    <!-- Navbar ajustada al estilo compacto de las vistas de autenticación -->
+    <nav class="flex justify-between items-center px-8 py-6 border-b border-ily-purple-300/30 bg-ily-dark/80 backdrop-blur-sm fixed top-0 left-0 w-full z-50">
+      <a href="/" class="text-2xl font-bold tracking-wide font-pixel-logo">
+        <span class="text-ily-purple-300 drop-shadow-neon-purple-lg">ily</span>verse
+      </a>
+      <div class="flex gap-4 font-semibold">
+        <a href="/login" class="px-5 py-2.5 rounded-md border border-ily-purple-300/40 text-ily-purple-100 hover:bg-ily-purple-300/15 hover:border-ily-purple-300 shadow-neon-border hover:shadow-neon-border-hover transition-all duration-300 text-xs">
+          Iniciar sesión
+        </a>
+        <a href="/signup" class="px-5 py-2.5 rounded-md bg-gradient-to-r from-ily-purple-500 to-ily-purple-300 text-white shadow-neon-btn hover:shadow-neon-btn-hover hover:-translate-y-0.5 transition-all duration-300 text-xs">
+          Registrarse
+        </a>
       </div>
     </nav>
 
-    <!-- seccion principal (hero) -->
-    <main class="flex-1 flex justify-center items-center text-center p-6">
-      <div class="max-w-2xl">
-        <span
-          class="inline-block bg-[#9d4edd]/15 text-[#c77dff] border border-[#c77dff]/20 px-4 py-1.5 rounded-full text-sm font-semibold mb-6"
-        >
-          Comunidad & Streaming
+
+    <div class="h-24"></div>
+
+  
+    <main class="flex-1 flex justify-center items-center text-center p-6 my-8">
+      <div class="w-full max-w-md p-8 bg-ily-dark/35 rounded-xl border border-ily-purple-300/30 backdrop-blur-sm shadow-xl">
+        <span class="inline-block bg-ily-purple-500/20 text-ily-purple-300 border border-ily-purple-300/30 px-4 py-1.5 rounded-full text-[10px] font-semibold mb-6 tracking-wider">
+          Tiendita & Comunidad Oficial de Ily
         </span>
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-          Bienvenido al <span class="text-[#c77dff]">ilyverse</span>
+        
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-4 leading-tight tracking-tight font-pixel-logo">
+          Bienvenido al <span class="text-ily-purple-300 drop-shadow-neon-purple-lg">ilyverse</span>
         </h1>
-        <p class="text-[#a09abc] text-lg mb-8 leading-relaxed">
-          Tu punto de encuentro oficial. conecta, participa en las dinámicas del
-          stream y forma parte de la comunidad.
+        
+        <p class="text-[#a09abc] text-xs md:text-sm mb-8 leading-relaxed max-w-xs mx-auto">
+          El rincón ideal de los niños toros. Conecta, encuentra merch única y forma parte de esta gran comunidad pixelada.
         </p>
 
-        <div class="flex justify-center gap-4">
-          <a
-            href="/signup"
-            class="px-8 py-3 rounded-lg text-base font-semibold bg-gradient-to-r from-[#9d4edd] to-[#c77dff] text-white shadow-[0_0_15px_rgba(157,78,221,0.4)] hover:shadow-[0_0_20px_rgba(199,125,255,0.7)] hover:-translate-y-0.5 transition-all"
-            >Unirme a la comunidad</a
-          >
-          <a
-            href="/login"
-            class="px-8 py-3 rounded-lg text-base font-semibold border border-[#c77dff]/30 text-[#f3f0ff] hover:bg-[#c77dff]/10 hover:border-[#c77dff] transition-all"
-            >Ingresar</a
-          >
+        <div class="flex flex-col gap-3 font-semibold text-xs">
+          <a href="/signup" class="w-full py-3 rounded-lg bg-gradient-to-r from-ily-purple-500 to-ily-purple-300 text-white shadow-neon-btn hover:shadow-neon-btn-hover hover:-translate-y-0.5 transition-all duration-300">
+            Unirme a la comunidad
+          </a>
+          <a href="/login" class="w-full py-3 rounded-lg border border-ily-purple-300/40 text-ily-purple-100 hover:bg-ily-purple-300/15 hover:border-ily-purple-300 shadow-neon-border hover:shadow-neon-border-hover transition-all duration-300">
+            Ingresar
+          </a>
         </div>
       </div>
     </main>
+
   </body>
 </html>

@@ -9,6 +9,7 @@ app.use(cors()); // middleware para habilitar los permisos de cors
 
 // servimos las vistas estaticas (html, css, js) en sus respectivas rutas
 app.use("/", express.static(path.join(__dirname, "src", "views", "home")));
+app.use('/multimedia', express.static(path.join(__dirname, 'multimedia')));
 app.use(
   "/login",
   express.static(path.join(__dirname, "src", "views", "login")),
