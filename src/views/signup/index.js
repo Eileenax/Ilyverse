@@ -1,7 +1,7 @@
-// Inicializar EmailJS con tu Public Key
-emailjs.init("TU_PUBLIC_KEY_AQUI");
+// Inicializar EmailJS con la key publica de emailjs
+emailjs.init("pQwc4TTouuCqPH2cc");
 
-const form = document.querySelector('form');
+const form = document.querySelector('#signup-form');
 
 form.addEventListener('submit', async (e) => {
 e.preventDefault();
