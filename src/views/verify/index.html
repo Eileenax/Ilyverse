@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ilyverse - Verificando Cuenta</title>
+
+    <link rel="icon" type="image/png" href="/multimedia/icon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              "pixel-base": ["Silkscreen", "sans-serif"],
+              "pixel-logo": ['"Press Start 2P"', "cursive"],
+            },
+            colors: {
+              "ily-purple": { 100: "#f3f0ff", 300: "#c77dff", 500: "#9d4edd" },
+              "ily-dark": "#0f0c1b",
+            },
+            backgroundImage: {
+              "cyberpunk-city":
+                "linear-gradient(rgba(15, 12, 27, 0.4), rgba(15, 12, 27, 0.6)), url('/multimedia/background.gif')",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-ily-dark text-ily-purple-100 font-pixel-base min-h-screen flex flex-col bg-cyberpunk-city bg-cover bg-center bg-no-repeat bg-fixed"
+  >
+    <div id="navbar-container"></div>
+    <div class="h-24"></div>
+
+    <main class="flex-1 flex justify-center items-center p-6 my-8">
+      <div
+        class="w-full max-w-md bg-ily-dark/40 p-8 rounded-xl border border-ily-purple-300/30 backdrop-blur-sm text-center shadow-xl"
+      >
+        <h2
+          id="verify-title"
+          class="text-xl font-bold mb-4 font-pixel-logo text-ily-purple-300"
+        >
+          Verificando tu cuenta...
+        </h2>
+        <p id="verify-text" class="text-xs text-[#a09abc] leading-relaxed mb-6">
+          Por favor espera unos momentos mientras confirmamos tu correo
+          electrónico.
+        </p>
+        <a
+          id="action-btn"
+          href="/login"
+          class="hidden inline-block py-2.5 px-6 rounded-lg text-xs font-semibold bg-ily-purple-500 text-white shadow-[0_0_15px_rgba(157,78,221,0.6)]"
+        >
+          Ir al Login
+        </a>
+      </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

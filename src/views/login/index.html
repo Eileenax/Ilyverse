@@ -4,87 +4,84 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ilyverse - Iniciar Sesión</title>
-    
 
     <link rel="icon" type="image/png" href="/multimedia/icon.png" />
 
-    <!-- CDN de Tailwind CSS y fuentes pixel art -->
+    <!-- CDN de Tailwind CSS y Fuentes Pixel -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-    
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              'pixel-base': ['Silkscreen', 'sans-serif'],
-              'pixel-logo': ['"Press Start 2P"', 'cursive'],
+              "pixel-base": ["Silkscreen", "sans-serif"],
+              "pixel-logo": ['"Press Start 2P"', "cursive"],
             },
             colors: {
-              'ily-purple': {
-                100: '#f3f0ff',
-                300: '#c77dff',
-                500: '#9d4edd',
+              "ily-purple": {
+                100: "#f3f0ff",
+                300: "#c77dff",
+                500: "#9d4edd",
               },
-              'ily-dark': '#0f0c1b',
+              "ily-dark": "#0f0c1b",
             },
             backgroundImage: {
-              'cyberpunk-city': "linear-gradient(rgba(15, 12, 27, 0.4), rgba(15, 12, 27, 0.6)), url('/multimedia/background.gif')",
+              "cyberpunk-city":
+                "linear-gradient(rgba(15, 12, 27, 0.4), rgba(15, 12, 27, 0.6)), url('/multimedia/background.gif')",
             },
             dropShadow: {
-              'neon-purple-lg': '0 0 20px rgba(199, 125, 255, 1)',
+              "neon-purple-lg": "0 0 20px rgba(199, 125, 255, 1)",
             },
             boxShadow: {
-              'neon-border': '0 0 15px rgba(199, 125, 255, 0.5)',
-              'neon-border-hover': '0 0 25px rgba(199, 125, 255, 0.9)',
-              'neon-btn': '0 0 15px rgba(157, 78, 221, 0.6)',
-              'neon-btn-hover': '0 0 25px rgba(199, 125, 255, 0.9)',
-            }
-          }
-        }
-      }
+              "neon-border": "0 0 15px rgba(199, 125, 255, 0.5)",
+              "neon-border-hover": "0 0 25px rgba(199, 125, 255, 0.9)",
+              "neon-btn": "0 0 15px rgba(157, 78, 221, 0.6)",
+              "neon-btn-hover": "0 0 25px rgba(199, 125, 255, 0.9)",
+            },
+          },
+        },
+      };
     </script>
   </head>
-  <body class="bg-ily-dark text-ily-purple-100 font-pixel-base min-h-screen flex flex-col bg-cyberpunk-city bg-cover bg-center bg-no-repeat bg-fixed">
-    
-    
-    <nav class="flex justify-between items-center px-8 py-6 border-b border-ily-purple-300/30 bg-ily-dark/80 backdrop-blur-sm fixed top-0 left-0 w-full z-50">
-      <a href="/" class="text-2xl font-bold tracking-wide font-pixel-logo">
-        <span class="text-ily-purple-300 drop-shadow-neon-purple-lg">ily</span>verse
-      </a>
-      <a
-        href="/signup"
-        class="text-xs md:text-sm font-semibold text-[#a09abc] hover:text-ily-purple-300 transition-all"
-        >¿No tienes cuenta? Regístrate</a
-      >
-    </nav>
-
-    
+  <body
+    class="bg-ily-dark text-ily-purple-100 font-pixel-base min-h-screen flex flex-col bg-cyberpunk-city bg-cover bg-center bg-no-repeat bg-fixed"
+  >
+    <div id="navbar-container"></div>
     <div class="h-24"></div>
 
-    <!-- Formulario de Login -->
     <main class="flex-1 flex justify-center items-center p-6 my-8">
       <div
         class="w-full max-w-md bg-ily-dark/35 p-8 rounded-xl border border-ily-purple-300/30 backdrop-blur-sm shadow-xl"
       >
-        <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-2 font-pixel-logo">
+        <h2
+          class="text-2xl md:text-3xl font-extrabold text-center mb-2 font-pixel-logo"
+        >
           Iniciar Sesión
         </h2>
-        <p class="text-[#a09abc] text-center text-xs md:text-sm mb-6 leading-relaxed">
+        <p
+          class="text-[#a09abc] text-center text-xs md:text-sm mb-6 leading-relaxed"
+        >
           Ingresa para acceder a tu panel
         </p>
 
-        <form id="login-form" class="space-y-4">
+        <form id="login-form" class="space-y-4" novalidate>
           <div>
             <label class="block text-xs font-medium mb-1.5 text-ily-purple-100"
               >Correo Electrónico</label
             >
             <input
+              id="email-input"
               type="email"
               placeholder="tu@email.com"
-              required
-              class="w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border border-ily-purple-300/30 text-ily-purple-100 placeholder-[#a09abc]/50 focus:outline-none focus:border-ily-purple-300 focus:ring-1 focus:ring-ily-purple-300 transition-all text-xs"
+              class="w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border border-ily-purple-300/30 text-ily-purple-100 placeholder-[#a09abc]/50 focus:outline-none transition-all text-xs"
             />
           </div>
 
@@ -93,14 +90,15 @@
               >Contraseña</label
             >
             <input
+              id="password-input"
               type="password"
               placeholder="••••••••"
-              required
-              class="w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border border-ily-purple-300/30 text-ily-purple-100 placeholder-[#a09abc]/50 focus:outline-none focus:border-ily-purple-300 focus:ring-1 focus:ring-ily-purple-300 transition-all text-xs"
+              class="w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border border-ily-purple-300/30 text-ily-purple-100 placeholder-[#a09abc]/50 focus:outline-none transition-all text-xs"
             />
           </div>
 
           <button
+            id="form-btn"
             type="submit"
             class="w-full py-3 mt-4 rounded-lg font-semibold text-sm bg-gradient-to-r from-ily-purple-500 to-ily-purple-300 text-white shadow-neon-btn hover:shadow-neon-btn-hover hover:-translate-y-0.5 transition-all duration-300"
           >
@@ -110,5 +108,8 @@
       </div>
     </main>
 
+    <div id="footer-container"></div>
+
+    <script type="module" src="./index.js"></script>
   </body>
 </html>
