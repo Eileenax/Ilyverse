@@ -33,7 +33,6 @@ let passwordMatchValidation = false;
 
 // FUNCIÓN PARA APLICAR BORDES Y TEXTO DE ERROR
 const setFieldState = (input, errorEl, isValid, errorMsg) => {
-  // Si el campo está vacío, estilo neutro por defecto
   if (input.value.trim() === "") {
     input.className =
       "w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border border-ily-purple-300/30 text-ily-purple-100 placeholder-[#a09abc]/50 focus:outline-none transition-all text-xs";
@@ -45,7 +44,6 @@ const setFieldState = (input, errorEl, isValid, errorMsg) => {
   }
 
   if (isValid) {
-    // VÁLIDO: Borde Morado Neón con resplandor
     input.className =
       "w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border-2 border-ily-purple-300 text-ily-purple-100 focus:outline-none transition-all text-xs shadow-[0_0_12px_rgba(199,125,255,0.6)]";
     if (errorEl) {
@@ -53,7 +51,6 @@ const setFieldState = (input, errorEl, isValid, errorMsg) => {
       errorEl.classList.add("hidden");
     }
   } else {
-    // INVÁLIDO: Borde Rojo con resplandor
     input.className =
       "w-full px-4 py-2.5 rounded-lg bg-ily-dark/60 border-2 border-red-500 text-ily-purple-100 focus:outline-none transition-all text-xs shadow-[0_0_12px_rgba(239,68,68,0.6)]";
     if (errorEl) {
@@ -168,30 +165,31 @@ form.addEventListener("submit", async (e) => {
       password: passwordInput.value,
     };
 
-    // 1. Petición al Backend
+    // 1. Guardar en la base de datos a través de la API
     const response = await axios.post("/api/users", newUser);
 
-    // 2. Envío con EmailJS (aislado para evitar interrupciones en la base de datos)
+    // 2. Envío del correo de verificación con EmailJS desde el Frontend
     try {
       if (window.emailjs) {
-        emailjs.init("pQwc4TTouuCqPH2cc");
         const templateParams = {
-          to_name: newUser.username,
-          to_email: newUser.email,
-          user_email: newUser.email,
-          verification_link: `${window.location.origin}/verify?id=${response.data.user ? response.data.user.id : ""}&token=${response.data.token || ""}`,
-        };
+  to_name: newUser.username,
+  to_email: newUser.email,
+  verification_link: `${window.location.origin}/verify?id=${response.data.user.id}&token=${response.data.token}`,
+};
+
         await emailjs.send(
           "service_xlshix9",
           "template_3krzla8",
           templateParams,
+          "pQwc4TTouuCqPH2cc",
         );
+
+        console.log("Correo enviado con éxito vía EmailJS.");
+      } else {
+        console.warn("El SDK de EmailJS no se detectó en window.emailjs.");
       }
     } catch (emailErr) {
-      console.warn(
-        "El usuario se creó en DB, pero falló el envío del correo EmailJS:",
-        emailErr,
-      );
+      console.error("Error al enviar el correo con EmailJS:", emailErr);
     }
 
     displayNotification(
@@ -199,7 +197,7 @@ form.addEventListener("submit", async (e) => {
       "¡Registro exitoso! Revisa tu correo de verificación.",
     );
 
-    // Limpiar campos
+    // Limpiar campos y formulario
     form.reset();
     [usernameInput, emailInput, passwordInput, passwordMatchInput].forEach(
       (inp) => {

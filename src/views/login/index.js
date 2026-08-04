@@ -21,21 +21,23 @@ form.addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Ingresando...";
 
-  try {
-    const { data } = await axios.post("/api/login", {
-      email: emailInput.value.trim(),
-      password: passwordInput.value,
-    });
+ try {
+  const { data } = await axios.post("/api/users/login", {
+    email: emailInput.value.trim(),
+    password: passwordInput.value,
+  });
 
-    displayNotification(false, "¡Bienvenido de nuevo!");
+  // Guardar el token y datos de usuario en la sesión
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data));
 
-    setTimeout(() => {
-      window.location.pathname = "/";
-    }, 1500);
-  } catch (error) {
-    const errorMsg = error.response?.data?.error || "Credenciales incorrectas.";
-    displayNotification(true, errorMsg);
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Ingresar";
-  }
+  displayNotification(false, "¡Bienvenido de nuevo!");
+
+  setTimeout(() => {
+    window.location.pathname = "/";
+  }, 1500);
+} catch (error) {
+  const errorMsg = error.response?.data?.error || "Credenciales incorrectas.";
+  displayNotification(true, errorMsg);
+}
 });

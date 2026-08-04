@@ -98,6 +98,68 @@ usersRouter.post("/", async (req, res) => {
   }
 });
 
+// INICIO DE SESIÓN (LOGIN)
+usersRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1. Validar que vengan los datos
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ error: "El correo y la contraseña son obligatorios." });
+    }
+
+    // 2. Buscar al usuario en la base de datos
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    // 3. Comprobar si el usuario existe y verificar la contraseña
+    const passwordCorrect =
+      user === null
+        ? false
+        : await bcrypt.compare(password, user.passwordHash);
+
+    if (!(user && passwordCorrect)) {
+      return res
+        .status(401)
+        .json({ error: "Usuario o contraseña incorrectos." });
+    }
+
+    // 4. Verificar si la cuenta ya confirmó el correo electrónico
+    if (!user.verified) {
+      return res.status(403).json({
+        error:
+          "Tu cuenta aún no ha sido verificada. Por favor, revisa tu correo electrónico.",
+      });
+    }
+
+    // 5. Generar token de sesión JWT
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    };
+
+    const token = jwt.sign(
+      userForToken,
+      process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
+      { expiresIn: "7d" },
+    );
+
+    // 6. Responder con datos de usuario y token
+    return res.status(200).send({
+      token,
+      username: user.username,
+      email: user.email,
+      id: user._id,
+    });
+  } catch (error) {
+    console.error("Error en login:", error);
+    return res
+      .status(500)
+      .json({ error: "Ocurrió un error inesperado al iniciar sesión." });
+  }
+});
+
 // VERIFICACIÓN DEL TOKEN DE CORREO
 usersRouter.patch("/:id/:token", async (req, res) => {
   try {

@@ -26,6 +26,5 @@ app.use(
   "/components",
   express.static(path.join(__dirname, "src", "views", "components")),
 );
-app.use("/api/users", usersRouter);
 // exportamos la app para levantarla en index.js
 module.exports = app;
