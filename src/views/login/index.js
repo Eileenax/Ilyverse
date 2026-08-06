@@ -21,23 +21,28 @@ form.addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.innerText = "Ingresando...";
 
- try {
-  const { data } = await axios.post("/api/users/login", {
-    email: emailInput.value.trim(),
-    password: passwordInput.value,
-  });
+  try {
+    const { data } = await axios.post("/api/users/login", {
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+    });
 
-  // Guardar el token y datos de usuario en la sesión
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify(data));
+    // Guardar el token y datos del usuario
+    localStorage.setItem("token", data.token);
+    // Si la API devuelve data.user guardamos ese objeto; si no, guardamos la data completa
+    const userData = data.user ? data.user : data;
+    localStorage.setItem("user", JSON.stringify(userData));
 
-  displayNotification(false, "¡Bienvenido de nuevo!");
+    displayNotification(false, "¡Bienvenido de nuevo!");
 
-  setTimeout(() => {
-    window.location.pathname = "/";
-  }, 1500);
-} catch (error) {
-  const errorMsg = error.response?.data?.error || "Credenciales incorrectas.";
-  displayNotification(true, errorMsg);
-}
+    setTimeout(() => {
+      window.location.pathname = "/";
+    }, 1200);
+  } catch (error) {
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Iniciar Sesión";
+    
+    const errorMsg = error.response?.data?.error || "Credenciales incorrectas.";
+    displayNotification(true, errorMsg);
+  }
 });

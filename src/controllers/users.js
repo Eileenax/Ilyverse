@@ -57,7 +57,7 @@ usersRouter.post("/", async (req, res) => {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // 5. Crear y guardar nuevo usuario
+    // 5. Crear y guardar nuevo usuario (el campo 'role' asumirá 'user' por defecto)
     const newUser = new User({
       username,
       email: email.toLowerCase(),
@@ -82,6 +82,7 @@ usersRouter.post("/", async (req, res) => {
         id: userId,
         username: savedUser.username,
         email: savedUser.email,
+        role: savedUser.role || "user",
       },
       token,
     });
@@ -133,10 +134,11 @@ usersRouter.post("/login", async (req, res) => {
       });
     }
 
-    // 5. Generar token de sesión JWT
+    // 5. Generar token de sesión JWT (incluyendo rol)
     const userForToken = {
       username: user.username,
       id: user._id,
+      role: user.role || "user",
     };
 
     const token = jwt.sign(
@@ -145,11 +147,12 @@ usersRouter.post("/login", async (req, res) => {
       { expiresIn: "7d" },
     );
 
-    // 6. Responder con datos de usuario y token
+    // 6. Responder con datos de usuario y token (incluyendo rol)
     return res.status(200).send({
       token,
       username: user.username,
       email: user.email,
+      role: user.role || "user",
       id: user._id,
     });
   } catch (error) {

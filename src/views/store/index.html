@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Codificación para soporte completo de caracteres en español -->
+  <meta charset="UTF-8" />
+  
+  <!-- Adaptabilidad en dispositivos móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>ily store | ilyverse</title>
+
+  <!-- Tailwind CSS por CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tipografías pixeladas desde Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <!-- Configuración de colores Cyberpunk para Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ily-dark': '#0c0714',
+            'ily-card': '#150c27',
+            'ily-purple': '#a855f7',
+            'ily-purple-300': '#c084fc',
+          },
+          fontFamily: {
+            'pixel-logo': ['"Press Start 2P"', 'cursive'],
+            'pixel-base': ['"VT323"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Fondo con la imagen de la ciudad cyberpunk */
+    .bg-main-wallpaper {
+      background-image: url('/multimedia/download.gif'); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+
+<body class="bg-ily-dark text-white min-h-screen flex flex-col font-pixel-base selection:bg-ily-purple selection:text-white bg-main-wallpaper relative">
+
+  <!-- Capa oscura semitransparente SIN desenfoque para que la imagen se vea nítida -->
+  <div class="fixed inset-0 bg-black/20 pointer-events-none z-0"></div>
+
+  <!-- Wrapper superior para posicionar la barra de navegación y la tarjeta flotante por encima del fondo -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- Receptáculo de la barra de navegación común -->
+    <div id="navbar-container"></div>
+
+    <!-- Main centrado igual que el Home de la app -->
+    <main class="flex-1 container mx-auto px-4 py-8 max-w-5xl flex flex-col justify-center">
+      
+      <!-- Tarjeta Flotante Transparente con Glassmorphism -->
+      <div class="bg-ily-dark/60 border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+        
+        <!-- Encabezado de la Tienda -->
+        <div class="flex flex-col items-center justify-center text-center mb-8 relative">
+          
+          <!-- Título principal "ily store" con el resplandor púrpura neón idéntico al "ilyverse" del Home -->
+          <h1 class="text-2xl sm:text-3xl font-pixel-logo tracking-wider mb-2 text-white">
+            ily<span class="text-ily-purple-300 drop-shadow-[0_0_12px_rgba(192,132,252,0.8)]">store</span>
+          </h1>
+          
+          <!-- Subtítulo oficial -->
+          <p class="text-gray-300 text-lg sm:text-xl font-pixel-base tracking-wide">
+            Sé un niño toro real!
+          </p>
+
+          <!-- Botón de carrito superior derecho en estilo píldora neón -->
+          <button id="cart-drawer-btn" class="mt-4 sm:mt-0 sm:absolute sm:right-0 sm:top-0 flex items-center gap-2 bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/50 text-white font-pixel-base px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all cursor-pointer">
+            <span class="text-sm">🛒 Carrito</span>
+            <span id="cart-count" class="bg-ily-purple-300 text-black text-[10px] font-pixel-logo px-2 py-0.5 rounded-full font-bold">0</span>
+          </button>
+
+          <!-- Espacio para acciones de Administrador (+ Nuevo Producto) -->
+          <div id="admin-actions" class="mt-4"></div>
+        </div>
+
+        <!-- Rejilla de productos dentro del contenedor translúcido -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div class="col-span-full text-center py-16">
+            <p class="text-ily-purple-300 text-base font-pixel-logo animate-pulse drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]">⏳ Cargando catálogo espacial...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Ventana Modal Cyberpunk para Agregar / Editar productos -->
+  <div id="product-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-ily-card/95 border border-ily-purple/40 rounded-2xl w-full max-w-md p-6 shadow-[0_0_30px_rgba(168,85,247,0.2)] relative">
+      
+      <h2 id="modal-title" class="font-pixel-logo text-xs text-ily-purple-300 mb-6 text-center tracking-wide">
+        ➕ NUEVO PRODUCTO
+      </h2>
+
+      <form id="product-form" class="flex flex-col gap-4 text-sm font-pixel-base">
+        
+        <div>
+          <label class="block text-gray-300 mb-1 uppercase tracking-wider">Nombre del Producto</label>
+          <input 
+            type="text" 
+            id="prod-name" 
+            required 
+            placeholder="Ej: ILY Hoodie"
+            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-300 mb-1 uppercase tracking-wider">Precio ($)</label>
+            <input 
+              type="number" 
+              id="prod-price" 
+              step="0.01" 
+              required 
+              placeholder="45"
+              class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-300 mb-1 uppercase tracking-wider">Categoría</label>
+            <input 
+              type="text" 
+              id="prod-category" 
+              placeholder="HOODIE, MUG, CAP"
+              class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors uppercase"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-300 mb-1 uppercase tracking-wider">URL Imagen</label>
+          <input 
+            type="url" 
+            id="prod-image" 
+            placeholder="https://..."
+            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors"
+          />
+        </div>
+
+        <div>
+          <label class="block text-gray-300 mb-1 uppercase tracking-wider">Descripción</label>
+          <textarea 
+            id="prod-description" 
+            rows="2" 
+            placeholder="Descripción opcional..."
+            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors resize-none"
+          ></textarea>
+        </div>
+
+        <div class="flex gap-3 mt-4 pt-2 border-t border-white/10">
+          <button 
+            type="button" 
+            id="cancel-modal-btn" 
+            class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 rounded-xl transition-colors font-bold uppercase"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="flex-1 py-2 bg-ily-purple hover:bg-purple-600 text-white rounded-xl transition-colors font-bold uppercase shadow-lg"
+          >
+            Guardar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Carga del JavaScript de la vista -->
+  <script type="module" src="/store/index.js"></script>
+
+</body>
+</html>
