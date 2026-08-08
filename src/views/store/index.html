@@ -65,10 +65,10 @@
       <div class="bg-ily-dark/60 border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.5)]">
         
         <!-- Encabezado de la Tienda -->
-        <div class="flex flex-col items-center justify-center text-center mb-8 relative">
+        <div class="flex flex-col items-center justify-center text-center mb-6 relative">
           
           <h1 class="text-2xl sm:text-3xl font-pixel-logo tracking-wider mb-2 text-white">
-            ily<span class="text-ily-purple-300 drop-shadow-[0_0_12px_rgba(192,132,252,0.8)]">store</span>
+            Ily<span class="text-ily-purple-300 drop-shadow-[0_0_12px_rgba(192,132,252,0.8)]">Store</span>
           </h1>
           
           <p class="text-gray-300 text-lg sm:text-xl font-pixel-base tracking-wide">
@@ -85,8 +85,33 @@
           <div id="admin-actions" class="mt-4"></div>
         </div>
 
+        <!-- APARTADO DE FILTROS POR CATEGORÍA -->
+        <div id="category-filters" class="flex flex-wrap justify-center gap-2 mb-8">
+          <button data-category="TODOS" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-ily-purple text-white shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all cursor-pointer">
+            Todos
+          </button>
+          <button data-category="CAMISA" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Camisas
+          </button>
+          <button data-category="HOODIE" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Hoodies
+          </button>
+          <button data-category="TAZA" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Tazas
+          </button>
+          <button data-category="MOUSEPAD" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Mouse pads
+          </button>
+          <button data-category="FORRO" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Forros
+          </button>
+          <button data-category="CONTROL" class="category-filter-btn px-4 py-1.5 rounded-xl font-pixel-base text-sm uppercase bg-purple-950/60 hover:bg-purple-900 text-gray-300 border border-white/10 transition-all cursor-pointer">
+            Gaming
+          </button>
+        </div>
+
         <!-- Rejilla de productos -->
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <div class="col-span-full text-center py-16">
             <p class="text-ily-purple-300 text-base font-pixel-logo animate-pulse drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]">⏳ Cargando catálogo espacial...</p>
           </div>
@@ -98,7 +123,35 @@
 
   </div>
 
-  <!-- Ventana Modal Cyberpunk para Agregar / Editar productos -->
+  <!-- PANEL / DRAWER DEL CARRITO (Oculto por defecto) -->
+  <div id="cart-drawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex justify-end">
+    <div class="bg-ily-card border-l border-ily-purple/40 w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
+      <div>
+        <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+          <h2 class="text-sm font-pixel-logo text-ily-purple-300">🛒 Tu Carrito</h2>
+          <button id="close-cart-btn" class="text-gray-400 hover:text-white text-xl font-bold cursor-pointer">✕</button>
+        </div>
+
+        <!-- Lista de elementos en el carrito -->
+        <div id="cart-items-container" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 font-pixel-base text-lg">
+          <p class="text-gray-400 text-center py-8">El carrito está vacío</p>
+        </div>
+      </div>
+
+      <!-- Total y Botón de Pago -->
+      <div class="border-t border-white/10 pt-4 mt-4 font-pixel-base">
+        <div class="flex justify-between items-center mb-4 text-xl">
+          <span class="text-gray-300">Total:</span>
+          <span class="text-ily-purple-300 font-bold text-2xl">$<span id="cart-total-amount">0.00</span></span>
+        </div>
+        <button id="checkout-btn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold uppercase transition-colors shadow-lg cursor-pointer text-lg">
+          Ir a Pagar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENTANA MODAL DE NUEVO / EDITAR PRODUCTO -->
   <div id="product-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-ily-card/95 border border-ily-purple/40 rounded-2xl w-full max-w-md p-6 shadow-[0_0_30px_rgba(168,85,247,0.2)] relative">
       
@@ -107,85 +160,62 @@
       </h2>
 
       <form id="product-form" class="flex flex-col gap-4 text-sm font-pixel-base">
-        
         <div>
           <label class="block text-gray-300 mb-1 uppercase tracking-wider">Nombre del producto</label>
-          <input 
-            type="text" 
-            id="prod-name" 
-            required 
-            placeholder="ej: Ily Hoodie"
-            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors"
-          />
+          <input type="text" id="prod-name" required placeholder="ej: Ily Hoodie" class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors" />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-gray-300 mb-1 uppercase tracking-wider">Precio ($)</label>
-            <input 
-              type="number" 
-              id="prod-price" 
-              step="0.01" 
-              required 
-              placeholder="45"
-              class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors"
-            />
+            <input type="number" id="prod-price" step="0.01" required placeholder="45" class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors" />
           </div>
           <div>
             <label class="block text-gray-300 mb-1 uppercase tracking-wider">Categoría</label>
-            <select 
-              id="prod-category" 
-              required
-              class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors uppercase cursor-pointer"
-            >
-              <option value="" disabled selected>Selecciona una categoría</option>
+            <select id="prod-category" required class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors uppercase cursor-pointer">
+              <option value="" disabled selected>Selecciona</option>
               <option value="CAMISA">Camisa</option>
               <option value="HOODIE">Hoodie</option>
               <option value="TAZA">Taza</option>
               <option value="MOUSEPAD">Mouse pad</option>
               <option value="FORRO">Forro de teléfono</option>
-              <option value="CONTROL">Control / Accesorio gaming</option>
+              <option value="CONTROL">Control / Accesorio</option>
             </select>
           </div>
         </div>
 
         <div>
           <label class="block text-gray-300 mb-1 uppercase tracking-wider">Imagen del producto</label>
-          <input 
-            type="file" 
-            id="prod-image-file" 
-            accept="image/*"
-            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white text-xs file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-pixel-base file:bg-ily-purple file:text-white hover:file:bg-purple-600 transition-colors cursor-pointer"
-          />
+          <input type="file" id="prod-image-file" accept="image/*" class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white text-xs file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-pixel-base file:bg-ily-purple file:text-white hover:file:bg-purple-600 transition-colors cursor-pointer" />
         </div>
 
         <div>
           <label class="block text-gray-300 mb-1 uppercase tracking-wider">Descripción</label>
-          <textarea 
-            id="prod-description" 
-            rows="2" 
-            placeholder="Descripción opcional..."
-            class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors resize-none"
-          ></textarea>
+          <textarea id="prod-description" rows="2" placeholder="Descripción opcional..." class="w-full bg-ily-dark border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-ily-purple transition-colors resize-none"></textarea>
         </div>
 
         <div class="flex gap-3 mt-4 pt-2 border-t border-white/10">
-          <button 
-            type="button" 
-            id="cancel-modal-btn" 
-            class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 rounded-xl transition-colors font-bold uppercase cursor-pointer"
-          >
-            Cancelar
-          </button>
-          <button 
-            type="submit" 
-            class="flex-1 py-2 bg-ily-purple hover:bg-purple-600 text-white rounded-xl transition-colors font-bold uppercase shadow-lg cursor-pointer"
-          >
-            Guardar
-          </button>
+          <button type="button" id="cancel-modal-btn" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 rounded-xl transition-colors font-bold uppercase cursor-pointer">Cancelar</button>
+          <button type="submit" class="flex-1 py-2 bg-ily-purple hover:bg-purple-600 text-white rounded-xl transition-colors font-bold uppercase shadow-lg cursor-pointer">Guardar</button>
         </div>
-
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE SIMULACIÓN DE PAGO -->
+  <div id="checkout-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-ily-card border border-ily-purple/40 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl">
+      <h3 class="font-pixel-logo text-xs text-ily-purple-300 mb-4">💳 Simulación de Pago</h3>
+      <p class="text-gray-300 text-sm mb-6">¿Estás lista para confirmar tu compra simulada?</p>
+      
+      <div class="flex flex-col gap-3 font-pixel-base">
+        <button id="confirm-purchase-btn" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold uppercase transition-colors cursor-pointer text-lg">
+          Pagar Ahora
+        </button>
+        <button id="back-to-cart-btn" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-white/10 rounded-xl font-bold uppercase transition-colors cursor-pointer text-lg">
+          Volver al Carrito
+        </button>
+      </div>
     </div>
   </div>
 
