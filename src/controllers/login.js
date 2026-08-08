@@ -1,27 +1,40 @@
 const emailInput = document.querySelector("#email");
+// aquí selecciono el elemento de entrada del correo electrónico desde el documento html usando su selector de id
 const passwordInput = document.querySelector("#password");
+// aquí selecciono el elemento de entrada de la contraseña desde el documento html usando su selector de id
 const form = document.querySelector("#form"); 
+// aquí selecciono el formulario principal del documento html mediante su selector de id
 const errorText = document.querySelector("#error-text"); 
+// aquí selecciono el elemento de texto en la interfaz donde mostraré los mensajes de error
 
 form.addEventListener("submit", async (event) => {
-  event.preventDefault(); // evita que la página se recargue automáticamente al enviar el formulario.
-try {
+// aquí escucho el evento submit del formulario y declaro una función asíncrona para manejar el envío de credenciales
+  event.preventDefault(); 
+  // aquí detengo el comportamiento por defecto del formulario para evitar que la página se recargue de forma automática
+  try {
+  // aquí abro un bloque try para intentar enviar los datos al servidor y manejar posibles errores de autenticación
     const user = {
-      // crea un objeto limpio con los datos que el usuario escribió en la pantalla.
-    email: emailInput.value, 
-    password: passwordInput.value
+    // aquí declaro un objeto literal llamado user para empaquetar las credenciales capturadas en pantalla
+      email: emailInput.value, 
+      // aquí asigno el valor del correo electrónico escrito por el usuario en el campo correspondiente
+      password: passwordInput.value
+      // aquí asigno el valor de la contraseña escrita por el usuario en el campo correspondiente
     };
 
-    const response = await axios.post("/api/login", user); // usa la librería axios para enviar los datos del objeto 'user' de forma asíncrona al servidor mediante un método post, y espera a que el servidor responda.
+    const response = await axios.post("/api/login", user); 
+    // aquí realizo una petición post asíncrona utilizando axios para enviar el objeto user a la ruta de inicio de sesión del servidor y espero la respuesta
 
-    // guarda en la memoria del navegador los datos del usuario y el token devueltos por el servidor para mantener la sesión activa en el resto de la página.
     localStorage.setItem("user", JSON.stringify(response.data));
+    // aquí guardo los datos de sesión devueltos por el servidor convirtiéndolos en texto plano dentro del almacenamiento local del navegador para mantener la sesión activa
 
-    window.location.pathname = `/home`; // si el servidor responde que todo está bien, esta línea redirecciona automáticamente al usuario a la página principal.
+    window.location.pathname = `/home`; 
+    // aquí cambio la ruta de navegación actual para redirigir al usuario hacia la página de inicio tras un acceso exitoso
 
-} catch (error) {
-    // si el servidor devuelve un error (por ejemplo, correo no verificado o contraseña incorrecta), el código salta directamente a este bloque de seguridad.
+  } catch (error) {
+  // aquí abro el bloque catch para capturar cualquier fallo o respuesta de error que ocurra durante la petición
     console.log(error); 
-    errorText.innerHTML = error.response?.data?.error || "Ocurrió un error inesperado."; // usa la librería axios para buscar dentro del fallo (.response), abrir los datos que envió el servidor (.data) y sacar el texto del error (.error) para ponerlo en la pantalla.
-}
+    // aquí imprimo el objeto del error completo en la consola del navegador para facilitar su depuración técnica
+    errorText.innerHTML = error.response?.data?.error || "Ocurrió un error inesperado."; 
+    // aquí extraigo el mensaje de error específico enviado por el backend desde la respuesta de axios o muestro un texto genérico por defecto en la interfaz
+  }
 });

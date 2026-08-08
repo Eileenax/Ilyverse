@@ -1,115 +1,140 @@
-// Exporto la función renderNavbar para poder reutilizarla e importarla en cualquier vista de mi aplicación
-export function renderNavbar(page = '') {
-  // Capturo el contenedor HTML donde se va a inyectar la barra de navegación usando document.getElementById
-  const container = document.getElementById('navbar-container');
+export const renderNavbar = (activePage) => {
+// aquí exporto la función renderNavbar que recibe la página actual para construir la barra de navegación de forma dinámica
+  const token = localStorage.getItem("token");
+  // aquí recupero el token de autenticación desde el almacenamiento local del navegador para verificar si la sesión está activa
+  const userRaw = localStorage.getItem("user");
+  // aquí recupero los datos serializados del usuario desde el almacenamiento local
 
-  // Si el contenedor no existe en la página actual, detengo la ejecución de la función para evitar errores en consola
-  if (!container) return;
+  const publicPages = ["home", "login", "signup", "verify"];
+  // aquí defino una lista con las páginas públicas permitidas para que cualquier usuario pueda visitarlas sin iniciar sesión
 
-  // Intento recuperar los datos del usuario guardados en el localStorage y los convierto de JSON a un objeto JavaScript
-  const user = JSON.parse(localStorage.getItem('user')) || null;
+  if (!token && !publicPages.includes(activePage)) {
+  // aquí compruebo si el usuario no tiene token y está intentando acceder a una ruta privada que requiere estar autenticado
+    window.location.replace("/");
+    // aquí reemplazo la entrada actual en el historial del navegador con la página principal para evitar que la flecha atrás vuelva a la tienda
+    return;
+    // aquí detengo la ejecución de la función para evitar que se renderice la barra en una ruta no permitida
+  }
 
-  // Obtengo el token de sesión almacenado en el localStorage
-  const token = localStorage.getItem('token');
+  let navContainer = document.getElementById("navbar") || document.querySelector("nav") || document.querySelector("header");
+  // aquí busco el contenedor de la barra de navegación en el documento html usando múltiples selectores posibles
 
-  // Verifico si el usuario ha iniciado sesión convirtiendo a booleano la existencia del token o de los datos del usuario
-  const isLoggedIn = !!(token || user);
+  if (!navContainer) {
+  // aquí compruebo si el contenedor no existe en la vista actual para crearlo de manera automática al inicio del cuerpo
+    navContainer = document.createElement("header");
+    // aquí creo una nueva etiqueta header en memoria para albergar la barra de navegación
+    navContainer.id = "navbar";
+    // aquí le asigno el identificador navbar al elemento creado para mantener la consistencia
+    document.body.prepend(navContainer);
+    // aquí inserto el contenedor recién creado al inicio del cuerpo del documento para asegurar su visibilidad
+  }
 
-  // Defino el nombre a mostrar: priorizo username, si no existe busco nombre, y si no hay ninguno uso 'Usuario' por defecto
-  const username = user?.username || user?.nombre || 'Usuario';
+  let displayName = "ILY";
+  // aquí inicializo una variable con un nombre por defecto para mostrar en caso de que los datos fallen
+  if (token && userRaw) {
+  // aquí verifico si tanto el token como los datos del usuario existen en el almacenamiento local
+    try {
+    // aquí abro un bloque try para intentar analizar y convertir los datos del usuario desde formato json
+      const user = JSON.parse(userRaw);
+      // aquí convierto la cadena de texto del usuario en un objeto manipulable de javascript
+      displayName = user.username || user.nombre || user.email || "ILY";
+      // aquí extraigo el nombre de usuario disponible priorizando el nombre de usuario, nombre real o correo
+    } catch (error) {
+    // aquí capturo cualquier error en el análisis de los datos del usuario
+      displayName = "ILY";
+      // aquí asigno el nombre por defecto si ocurre un fallo al leer el almacenamiento
+    }
+  }
 
-  // Defino el avatar del personaje: tomo avatar, luego characterSprite o un emoji por defecto si no están definidos
-  const characterAvatar = user?.avatar || user?.characterSprite || '👾';
+  const userMenuHtml = token && userRaw ? `
+    <div class="relative">
+      <button id="user-menu-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-ily-dark/80 border border-ily-purple-300/40 text-ily-purple-100 text-xs font-pixel-logo hover:border-ily-purple-300 transition-all">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        ${displayName}
+        <span class="text-[10px]">▼</span>
+      </button>
+      <div id="user-dropdown" class="absolute right-0 mt-2 w-52 bg-ily-dark/95 border border-ily-purple-300/40 rounded-xl p-2 shadow-xl backdrop-blur-md hidden z-50">
+        <div class="px-3 py-1.5 text-[10px] text-ily-purple-300/60 uppercase font-pixel-logo">cuenta activa</div>
+        <div class="px-3 py-1.5 text-xs text-ily-purple-100 font-bold font-pixel-logo truncate">${displayName}</div>
+        <div class="border-t border-ily-purple-300/20 my-1"></div>
+        <button id="nav-logout-btn" class="w-full text-left px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-pixel-logo transition-all flex items-center gap-2">
+          <span>🚪</span> cerrar sesión
+        </button>
+      </div>
+    </div>
+  ` : `
+    <div class="flex items-center gap-3">
+      <a href="/login" class="px-3 py-1.5 rounded-lg bg-ily-purple-300/20 text-ily-purple-100 hover:bg-ily-purple-300/30 text-xs font-pixel-logo transition-all">
+        iniciar sesión
+      </a>
+      <a href="/signup" class="px-3 py-1.5 rounded-lg bg-ily-purple-300 text-ily-dark hover:bg-ily-purple-200 text-xs font-pixel-logo font-bold transition-all">
+        registrarse
+      </a>
+    </div>
+  `;
+  // aquí genero condicionalmente el código html del menú de usuario con el botón de cerrar sesión o los botones de acceso según el estado de autenticación
 
-  // Verifico qué página está activa para aplicar los efectos de iluminación al enlace correspondiente
-  const isStoreActive = page === 'store';
-  const isCommunityActive = page === 'community';
-
-  // Inyecto el marcado HTML de la barra de navegación dinámicamente con estilos alineados a la vista principal
-  container.innerHTML = `
-    <nav class="w-full bg-black/40 border-b border-white/10 backdrop-blur-md px-4 sm:px-8 py-3.5 relative z-50">
-      <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
-        
-        <!-- Logo principal del sitio web apuntando a la raíz (/) del sitio -->
-        <a href="/" class="font-pixel-logo text-sm sm:text-base text-white tracking-widest hover:text-ily-purple-300 transition-colors shrink-0">
-          ily<span class="text-ily-purple-300">verse</span>
-        </a>
-
-        ${isLoggedIn ? `
-          <!-- Si el usuario TIENE sesión activa, muestro los enlaces principales con tipografía pixelada oficial y sus íconos -->
-          <div class="flex items-center gap-6 sm:gap-10 font-pixel-logo text-[10px] sm:text-xs">
-            <a href="/store" class="flex items-center gap-2 uppercase tracking-wider transition-all ${
-              isStoreActive 
-                ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]' 
-                : 'text-gray-300 hover:text-white'
-            }">
-              <span>🛒</span> TIENDA
-            </a>
-            
-            <a href="/community" class="flex items-center gap-2 uppercase tracking-wider transition-all ${
-              isCommunityActive 
-                ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]' 
-                : 'text-gray-300 hover:text-white'
-            }">
-              <span>🌐</span> COMUNIDAD
-            </a>
-          </div>
-
-          <!-- Contenedor relativo para posicionar de forma absoluta el menú desplegable del usuario -->
-          <div class="relative">
-            <!-- Botón principal del perfil de usuario estilizado como píldora cyberpunk -->
-            <button id="user-menu-btn" class="flex items-center gap-2 bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/50 text-white font-pixel-logo text-[10px] sm:text-xs px-3.5 py-1.5 rounded-full transition-all shadow-[0_0_12px_rgba(168,85,247,0.3)] cursor-pointer">
-              <span class="text-xs sm:text-sm">${characterAvatar}</span>
-              <span class="text-white font-pixel-logo text-[9px] sm:text-[10px] uppercase max-w-[65px] sm:max-w-[100px] truncate">${username}</span>
-              <span class="text-[8px] text-purple-300">▼</span>
-            </button>
-
-            <!-- Menú Desplegable con las opciones del usuario -->
-            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-40 bg-ily-dark/95 border border-white/10 rounded-xl shadow-2xl p-1.5 flex flex-col gap-1 z-50 backdrop-blur-md">
-              <div class="px-3 py-1.5 border-b border-white/10 text-[9px] text-gray-400 uppercase font-pixel-base truncate">
-                ${username}
-              </div>
-              <button id="nav-logout-btn" class="w-full text-left px-3 py-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors uppercase font-pixel-base text-[10px] flex items-center gap-1.5 cursor-pointer">
-                🚪 Salir
-              </button>
-            </div>
-          </div>
-        ` : `
-          <!-- Si el usuario NO tiene sesión activa, muestro las opciones de login y registro -->
-          <div class="flex items-center gap-3 sm:gap-5 font-pixel-logo text-[10px] sm:text-xs">
-            <a href="/login" class="text-gray-300 hover:text-white transition-colors uppercase">Login</a>
-            <a href="/signup" class="px-3 py-1.5 bg-ily-purple-500/80 hover:bg-ily-purple-300 text-white rounded-lg transition-colors uppercase font-bold text-[9px] sm:text-[10px] shadow-md">Registro</a>
-          </div>
-        `}
-
+  const navHtml = `
+    <nav class="w-full bg-ily-dark/95 border-b border-ily-purple-300/20 backdrop-blur-md sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center">
+          <a href="/" class="text-lg font-pixel-logo text-ily-purple-100 tracking-wider flex items-center gap-2">
+            <span class="text-ily-purple-300">I</span> lyverse
+          </a>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-xs font-pixel-logo">
+          <a href="/store" class="${activePage === 'store' ? 'text-ily-purple-300 font-bold' : 'text-ily-purple-100 hover:text-ily-purple-300'} transition-all flex items-center gap-1.5 uppercase tracking-wider">
+            🛒 TIENDA
+          </a>
+          <a href="/community" class="${activePage === 'community' ? 'text-ily-purple-300 font-bold' : 'text-ily-purple-100 hover:text-ily-purple-300'} transition-all flex items-center gap-1.5 uppercase tracking-wider">
+            🌐 COMUNIDAD
+          </a>
+        </div>
+        <div>
+          ${userMenuHtml}
+        </div>
       </div>
     </nav>
   `;
+  // aquí estructuro todo el código html de la barra de navegación incluyendo el fondo sólido, los enlaces centrales en mayúsculas y el menú dinámico
 
-  // Capturo las referencias de los botones y menús del DOM
-  const menuBtn = document.getElementById('user-menu-btn');
-  const dropdown = document.getElementById('user-dropdown');
-  const logoutBtn = document.getElementById('nav-logout-btn');
+  navContainer.innerHTML = navHtml;
+  // aquí inyecto todo el contenido html generado dentro del contenedor de la barra de navegación
 
-  // Añado evento para abrir/cerrar menú desplegable al hacer clic en el avatar
-  if (menuBtn && dropdown) {
-    menuBtn.addEventListener('click', (e) => {
+  const userMenuBtn = document.getElementById("user-menu-btn");
+  // aquí selecciono el botón principal del menú de usuario para controlar su despliegue
+  const userDropdown = document.getElementById("user-dropdown");
+  // hier selecciono el contenedor desplegable del menú de usuario
+
+  if (userMenuBtn && userDropdown) {
+  // aquí compruebo si ambos elementos existen en la vista actual antes de agregarles eventos
+    userMenuBtn.addEventListener("click", (e) => {
+    // aquí escucho el evento click en el botón del menú para alternar su visibilidad
       e.stopPropagation();
-      dropdown.classList.toggle('hidden');
+      // aquí detengo la propagación del evento para evitar que se cierre inmediatamente al hacer clic
+      userDropdown.classList.toggle("hidden");
+      // aquí alterno la clase hidden para mostrar u ocultar el menú desplegable
     });
 
-    // Cierro el menú desplegable si se hace clic fuera de él
-    document.addEventListener('click', () => {
-      dropdown.classList.add('hidden');
+    document.addEventListener("click", () => {
+    // aquí escucho los clics en cualquier parte del documento para cerrar el menú desplegable automáticamente
+      userDropdown.classList.add("hidden");
+      // aquí oculto el menú desplegable añadiéndole la clase hidden
     });
   }
 
-  // Añado evento para cerrar sesión
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+  const navLogoutBtn = document.getElementById("nav-logout-btn");
+  // aquí selecciono el botón de cerrar sesión dentro del menú desplegable
+  if (navLogoutBtn) {
+  // aquí verifico si el botón de cerrar sesión existe en la vista actual
+    navLogoutBtn.addEventListener("click", () => {
+    // aquí escucho el evento click en el botón de cerrar sesión
+      localStorage.removeItem("token");
+      // aquí borro el token de autenticación del almacenamiento local del navegador
+      localStorage.removeItem("user");
+      // aquí borro los datos del usuario del almacenamiento local del navegador
+      window.location.replace("/");
+      // aquí reemplazo la URL actual en el historial con el home para que la flecha de atrás no pueda regresar a la tienda protegida
     });
   }
-}
+};

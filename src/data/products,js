@@ -1,3 +1,6 @@
+// este archivo almacena un respaldo local de los productos base (seed data) que se utiliza para poblar
+// la base de datos de manera rápida en caso de migraciones, reseteos o configuraciones iniciales del sistema,
+// garantizando que siempre exista una estructura de productos de respaldo disponible aunque la app consulte la base de datos.
 module.exports = [
   {
     id: "camisa-hollow-knight",
