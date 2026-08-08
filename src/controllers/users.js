@@ -70,10 +70,10 @@ usersRouter.post("/", async (req, res) => {
 
     // 6. Generar token de verificación (expira en 1 día)
     const token = jwt.sign(
-      { id: userId },
-      process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
-      { expiresIn: "1d" },
-    );
+    { id: user._id, role: user.role }, 
+    process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
+    { expiresIn: "1d" }
+  );
 
     // 7. Respuesta exitosa para el Frontend
     return res.status(201).json({

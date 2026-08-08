@@ -1,19 +1,19 @@
-// Importo el módulo de la barra de navegación compartida
+// importo el módulo de la barra de navegación compartida
 import { renderNavbar } from "../components/navbar.js";
 
-// Renderizo la barra especificando que la página activa es "store"
+// renderizo la barra indicando que la página activa es store
 renderNavbar("store");
 
-// Obtengo el token e información del usuario
+// obtengo el token y los datos del usuario almacenados
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user")) || {};
 const isAdmin = user.role === "admin";
 
-// Variables globales de estado
+// declaro las variables para el manejo del estado local
 let productsList = [];
 let editingProductId = null;
 
-// Referencias a los nodos del DOM
+// busco y guardo las referencias a los elementos del dom
 const adminActionsContainer = document.getElementById("admin-actions");
 const productsGrid = document.getElementById("products-grid");
 const productModal = document.getElementById("product-modal");
@@ -22,10 +22,10 @@ const modalTitle = document.getElementById("modal-title");
 const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const cartCountElement = document.getElementById("cart-count");
 
-// Actualizo el contador de ítems del carrito
+// actualizo el contador del carrito al iniciar la vista
 updateCartCount();
 
-// Renderizo acciones de administración si aplica
+// muestro el botón para agregar productos si el usuario tiene rol de admin
 if (isAdmin && adminActionsContainer) {
   adminActionsContainer.innerHTML = `
     <button id="btn-create-product" class="px-4 py-1.5 bg-ily-purple/30 hover:bg-ily-purple border border-ily-purple text-white rounded-full text-[10px] font-pixel-logo transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)] cursor-pointer">
@@ -36,23 +36,21 @@ if (isAdmin && adminActionsContainer) {
   document.getElementById("btn-create-product")?.addEventListener("click", openCreateModal);
 }
 
-// Consulto los productos al servidor
+// consulto la lista de productos mediante la api del servidor
 async function fetchProducts() {
   try {
     const response = await fetch("/api/products");
-
-    if (!response.ok) throw new Error("Error en la conexión con la base de datos");
+    if (!response.ok) throw new Error("error al conectar con la base de datos");
 
     productsList = await response.json();
     displayProducts(productsList);
   } catch (error) {
-    console.error("Error:", error);
-
+    console.error("error:", error);
     if (productsGrid) {
       productsGrid.innerHTML = `
         <div class="col-span-full text-center py-12">
           <p class="text-red-400 font-pixel-base text-lg flex items-center justify-center gap-2">
-            <span>⚠️</span> No se pudieron cargar los productos de la base de datos.
+            <span>⚠️</span> No se pudieron cargar los productos del catálogo.
           </p>
         </div>
       `;
@@ -60,14 +58,14 @@ async function fetchProducts() {
   }
 }
 
-// Renderizo las tarjetas dentro del marco transparente
+// recorro el arreglo de productos para renderizar cada tarjeta en pantalla
 function displayProducts(products) {
   if (!productsGrid) return;
 
-  if (products.length === 0) {
+  if (!Array.isArray(products) || products.length === 0) {
     productsGrid.innerHTML = `
       <div class="col-span-full text-center py-12">
-        <p class="text-gray-400 font-pixel-base text-xl">👾 No hay ítems en la tienda todavía.</p>
+        <p class="text-gray-400 font-pixel-base text-xl">No hay ítems en la tienda todavía. ¡Agrega el primero!</p>
       </div>
     `;
     return;
@@ -75,6 +73,7 @@ function displayProducts(products) {
 
   productsGrid.innerHTML = products.map((product) => {
     const category = product.category || "ITEM";
+    const productId = product._id || product.id;
     
     return `
       <div class="bg-ily-card/80 border border-purple-900/40 rounded-2xl p-3.5 flex flex-col justify-between hover:border-ily-purple/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)] transition-all group relative backdrop-blur-sm">
@@ -98,28 +97,28 @@ function displayProducts(products) {
             `}
           </div>
 
-          <h3 class="font-pixel-base text-base text-white font-bold mb-1 tracking-wide truncate">${product.name}</h3>
+          <h3 class="font-pixel-base text-base text-white font-bold mb-1 tracking-wide truncate">${product.name || 'Sin nombre'}</h3>
         </div>
 
         <div class="flex items-center justify-between pt-2 border-t border-white/10 mt-2">
           
-          <span class="font-pixel-base text-xl font-bold text-ily-green tracking-tight">
-            $${product.price}
+          <span class="font-pixel-base text-xl font-bold text-ily-purple-300 tracking-tight">
+            $${product.price !== undefined ? product.price : '0'}
           </span>
 
           <div>
             ${isAdmin ? `
               <div class="flex gap-1">
                 <button 
-                  onclick="openEditModal('${product._id || product.id}')" 
-                  class="p-1.5 bg-amber-500/20 hover:bg-amber-500/40 border border-amber-500/40 text-amber-300 rounded-lg text-xs transition-colors"
+                  onclick="openEditModal('${productId}')" 
+                  class="p-1.5 bg-amber-500/20 hover:bg-amber-500/40 border border-amber-500/40 text-amber-300 rounded-lg text-xs transition-colors cursor-pointer"
                   title="Editar"
                 >
                   ✏️
                 </button>
                 <button 
-                  onclick="deleteProduct('${product._id || product.id}')" 
-                  class="p-1.5 bg-red-500/20 hover:bg-red-500/40 border border-red-500/40 text-red-300 rounded-lg text-xs transition-colors"
+                  onclick="deleteProduct('${productId}')" 
+                  class="p-1.5 bg-red-500/20 hover:bg-red-500/40 border border-red-500/40 text-red-300 rounded-lg text-xs transition-colors cursor-pointer"
                   title="Eliminar"
                 >
                   🗑️
@@ -127,9 +126,9 @@ function displayProducts(products) {
               </div>
             ` : `
               <button 
-                onclick="addToCart('${product._id || product.id}')" 
+                onclick="addToCart('${productId}')" 
                 class="p-2 bg-ily-purple hover:bg-purple-600 text-white rounded-xl shadow-[0_0_10px_rgba(168,85,247,0.4)] transition-all flex items-center justify-center cursor-pointer text-xs"
-                title="Agregar al Carrito"
+                title="Agregar al carrito"
               >
                 🛒
               </button>
@@ -143,32 +142,31 @@ function displayProducts(products) {
   }).join("");
 }
 
-// Abrir modal en modo creación
+// preparo y abro el modal para registrar un producto nuevo
 function openCreateModal() {
   editingProductId = null;
-  if (modalTitle) modalTitle.innerText = "➕ NUEVO PRODUCTO";
+  if (modalTitle) modalTitle.innerText = "➕ Nuevo producto";
   if (productForm) productForm.reset();
   productModal?.classList.remove("hidden");
 }
 
-// Abrir modal en modo edición
+// cargo los datos del producto seleccionado para editarlos en el modal
 window.openEditModal = function(id) {
   const product = productsList.find(p => (p._id || p.id) === id);
   if (!product) return;
 
   editingProductId = id;
-  if (modalTitle) modalTitle.innerText = "✏️ EDITAR PRODUCTO";
+  if (modalTitle) modalTitle.innerText = "✏️ Editar producto";
 
   document.getElementById("prod-name").value = product.name || "";
   document.getElementById("prod-price").value = product.price || "";
   document.getElementById("prod-category").value = product.category || "";
-  document.getElementById("prod-image").value = product.image || "";
   document.getElementById("prod-description").value = product.description || "";
 
   productModal?.classList.remove("hidden");
 };
 
-// Cerrar modal
+// cierro el modal de gestión de productos
 function closeModal() {
   productModal?.classList.add("hidden");
   if (productForm) productForm.reset();
@@ -177,18 +175,26 @@ function closeModal() {
 
 if (cancelModalBtn) cancelModalBtn.addEventListener("click", closeModal);
 
-// Guardar o actualizar producto
+// capturo el envío del formulario asegurando que coja bien los valores de tus inputs
 if (productForm) {
   productForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const productData = {
-      name: document.getElementById("prod-name").value.trim(),
-      price: Number(document.getElementById("prod-price").value),
-      category: document.getElementById("prod-category").value.trim().toUpperCase() || "MERCH",
-      image: document.getElementById("prod-image").value.trim(),
-      description: document.getElementById("prod-description").value.trim(),
-    };
+    const nameVal = document.getElementById("prod-name")?.value.trim() || "";
+    const priceVal = Number(document.getElementById("prod-price")?.value) || 0;
+    const categoryVal = document.getElementById("prod-category")?.value || "ITEM";
+    const descVal = document.getElementById("prod-description")?.value.trim() || "";
+
+    const formData = new FormData();
+    formData.append("name", nameVal);
+    formData.append("price", priceVal);
+    formData.append("category", categoryVal);
+    formData.append("description", descVal);
+
+    const fileInput = document.getElementById("prod-image-file");
+    if (fileInput && fileInput.files[0]) {
+      formData.append("image", fileInput.files[0]);
+    }
 
     const isEdit = !!editingProductId;
     const url = isEdit ? `/api/products/${editingProductId}` : "/api/products";
@@ -198,28 +204,34 @@ if (productForm) {
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(productData)
+        body: formData
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "No se pudo procesar la solicitud");
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "no se pudo completar la operación");
+        } else {
+          const textError = await response.text();
+          console.error("respuesta html del servidor:", textError);
+          throw new Error(`error en el servidor (${response.status}).`);
+        }
       }
 
       closeModal();
-      fetchProducts();
+      fetchProducts(); // Refresca la tienda y crea automáticamente la colección en MongoDB si no existía
     } catch (err) {
       alert("Error: " + err.message);
     }
   });
 }
 
-// Eliminar producto (Admin)
+// solicito la eliminación de un producto usando su ID real
 window.deleteProduct = async function(id) {
-  if (!confirm("¿Deseas eliminar permanentemente este producto del catálogo?")) return;
+  if (!confirm("¿Deseas eliminar este producto de la tienda?")) return;
 
   try {
     const response = await fetch(`/api/products/${id}`, {
@@ -230,19 +242,26 @@ window.deleteProduct = async function(id) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error al eliminar");
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "error al eliminar");
+      } else {
+        throw new Error(`error en el servidor (${response.status}) al eliminar`);
+      }
     }
 
-    fetchProducts();
+    fetchProducts(); 
   } catch (err) {
     alert("Error: " + err.message);
   }
 };
 
-// Agregar ítem al carrito de compras local
+// guardo el producto seleccionado dentro del carrito en el almacenamiento local
 window.addToCart = function(id) {
   const product = productsList.find(p => (p._id || p.id) === id);
+  if (!product) return;
+
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   const existingItem = cart.find(item => item.id === id);
@@ -254,10 +273,10 @@ window.addToCart = function(id) {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
-  alert(`🛒 "${product.name}" guardado en tu carrito.`);
+  alert(`🛒 "${product.name}" agregado al carrito.`);
 };
 
-// Actualizar indicador numérico en el carrito
+// calculo y actualizo el total de ítems mostrados en el icono del carrito
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -266,5 +285,5 @@ function updateCartCount() {
   }
 }
 
-// Ejecución inicial de carga de productos
+// inicio la carga de los productos al cargar el archivo
 fetchProducts();

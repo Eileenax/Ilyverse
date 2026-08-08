@@ -1,0 +1,90 @@
+module.exports = [
+  {
+    id: "camisa-hollow-knight",
+    name: "Camisa Hollow Knight: Ily Boss",
+    category: "ropa",
+    price: 20.00,
+    image: "/multimedia/productos/camisa-hollowknight-ily.png",
+    description: "Edición especial Hollow Knight con estilo de pelea 'Ily vs Caballerito'."
+  },
+  {
+    id: "camisa-mario-world",
+    name: "Camisa Super Mario World x Ily",
+    category: "ropa",
+    price: 20.00,
+    image: "/multimedia/productos/camisa-ily-marioworld.png",
+    description: "Ily junto a la pandilla clásica de Mario."
+  },
+  {
+    id: "camisa-bootleg-gigachat",
+    name: "Camisa Vintage: Streamer of the Year",
+    category: "ropa",
+    price: 20.00,
+    image: "/multimedia/productos/camisa-ily-gigachat.png",
+    description: "Ily gigachat, no hay más descripción."
+  },
+  {
+    id: "camisa-little-nightmares",
+    name: "Camisa Little Nightmares: Niña Tora",
+    category: "ropa",
+    price: 20.00,
+    image: "/multimedia/productos/camisa-littlenightmares-ily.png",
+    description: "Diseño oscuro y atmosférico 'La niña Tora' junto a ily  con impermeable amarillo."
+  },
+  {
+    id: "camisa-rdr2",
+    name: "Camisa RDR2: Arthur & Ily",
+    category: "ropa",
+    price: 20.00,
+    image: "/multimedia/productos/camisa-rdr2-ily.png",
+    description: "Estilo póster del Lejano Oeste en alto contraste rojo y negro."
+  },
+  {
+    id: "case-yoshi",
+    name: "Funda iPhone: Ily x Yoshi´s  Island Pixel Art",
+    category: "accesorios",
+    price: 10.00,
+    image: "/multimedia/productos/case-ily-yoshi.png",
+    description: "Case transparente resistente con ilustración estilo pixel art."
+  },
+  {
+    id: "control-xbox-ily",
+    name: "Control Custom Xbox: Ily Edition",
+    category: "hardware",
+    price: 60.00,
+    image: "/multimedia/productos/control-ily.png",
+    description: "Control inalámbrico morado con botón LED 'Ily' y botones temáticos ABXY."
+  },
+  {
+    id: "hoodie-cyberpunk",
+    name: "Hoodie Lila Cyberpunk",
+    category: "ropa",
+    price: 35.00,
+    image: "/multimedia/productos/hoddie-ily.png",
+    description: "Sudadera oversize 'Ily' en tono morado neón suave."
+  },
+  {
+    id: "hoodie-stardew",
+    name: "Hoodie Cozy Stardew Valley",
+    category: "ropa",
+    price: 35.00,
+    image: "/multimedia/productos/hoddie-stardewvalley-ily.png",
+    description: "Sudadera tono crema estilo stardew valley con Ily, Junimos y gatitos."
+  },
+  {
+    id: "mousepad-final-boss",
+    name: "Deskmat Retro Gaming: Final Boss",
+    category: "accesorios",
+    price: 20.00,
+    image: "/multimedia/productos/mousepad-ily.png",
+    description: "Mousepad gigante de alta precisión con arte de barra de vida y stats."
+  },
+  {
+    id: "taza-chibi",
+    name: "Taza Streamer Setup Chibi",
+    category: "accesorios",
+    price: 10.00,
+    image: "/multimedia/productos/taza-ilyverse.png",
+    description: "Taza de cerámica de 11oz con ilustración estilo setup de directo."
+  }
+];
