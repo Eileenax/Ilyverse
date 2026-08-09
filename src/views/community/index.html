@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidad - Ilyverse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ily-dark': '#0b0614',
+            'ily-purple': {
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+            }
+          },
+          fontFamily: {
+            'pixel-logo': ['monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-ily-dark text-ily-purple-100 min-h-screen flex flex-col font-pixel-logo relative overflow-x-hidden">
+
+  <!-- Imagen de fondo cyberpunk con capa translúcida -->
+  <div class="fixed inset-0 z-0 opacity-25 pointer-events-none bg-cover bg-center" style="background-image: url('/multimedia/background.jpg')"></div>
+
+  <!-- Barra de navegación -->
+  <div id="navbar" class="relative z-20"></div>
+
+  <!-- Contenido principal -->
+  <main id="app" class="flex-grow relative z-10">
+    <!-- El grid de avatares se cargará por JavaScript -->
+  </main>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

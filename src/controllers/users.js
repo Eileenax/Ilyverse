@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 // aquí importo jsonwebtoken para generar y verificar tokens de autenticación
 const axios = require("axios");
-// aquí importo axios para realizar peticiones http a servicios externos como hunter.io
+// aquí importo axios para realizar peticiones http a servicios externos como hunter.io y emailjs
 
 usersRouter.post("/", async (req, res) => {
 // aquí defino una ruta post en la raíz para manejar el registro de nuevos usuarios de forma asíncrona
@@ -108,17 +108,39 @@ usersRouter.post("/", async (req, res) => {
 
     const token = jwt.sign(
     // aquí genero un token de seguridad con jsonwebtoken
-    { id: user._id, role: user.role }, 
-    // aquí incluyo el identificador y el rol en el contenido del token
-    process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
-    // aquí firmo el token usando la clave secreta del entorno o una por defecto
-    { expiresIn: "1d" }
-    // aquí configuro una expiración de un día para el token de registro
-  );
+      { id: savedUser._id, role: savedUser.role || "user" },
+      // aquí incluyo el identificador y el rol de savedUser para evitar el error 500
+      process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
+      // aquí firmo el token usando la clave secreta del entorno o una por defecto
+      { expiresIn: "1d" }
+      // aquí configuro una expiración de un día para el token de registro
+    );
+
+    // aquí construimos el enlace de verificación para enviarlo por correo
+    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify.html?id=${userId}&token=${token}`;
+
+    // aquí enviamos el correo electrónico utilizando la API de EmailJS desde el backend
+    if (process.env.EMAILJS_SERVICE_ID && process.env.EMAILJS_TEMPLATE_ID && process.env.EMAILJS_PUBLIC_KEY) {
+      try {
+        await axios.post("https://api.emailjs.com/api/v1.0/email/send", {
+          service_id: process.env.EMAILJS_SERVICE_ID,
+          template_id: process.env.EMAILJS_TEMPLATE_ID,
+          user_id: process.env.EMAILJS_PUBLIC_KEY,
+          accessToken: process.env.EMAILJS_PRIVATE_KEY,
+          template_params: {
+            to_email: savedUser.email,
+            to_name: savedUser.username,
+            verification_url: verificationUrl,
+          },
+        });
+      } catch (emailError) {
+        console.error("Error al enviar correo con EmailJS:", emailError.response?.data || emailError.message);
+      }
+    }
 
     return res.status(201).json({
     // aquí respondo con un código http 201 de recurso creado exitosamente
-      message: "Usuario creado exitosamente.",
+      message: "Usuario creado exitosamente. Por favor, revisa tu correo para verificar tu cuenta.",
       // aquí envío un mensaje confirmando el éxito del registro
       user: {
       // aquí estructuro un objeto con los datos públicos del usuario

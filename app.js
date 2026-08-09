@@ -55,6 +55,19 @@ app.get("/store", (req, res) => {
 // aquí cierro la función de la ruta get explícita de la tienda
 
 app.use(
+  "/community",
+  express.static(path.join(__dirname, "src", "views", "community")),
+);
+// aquí configuro la ruta de la comunidad para servir los archivos estáticos de su respectiva vista
+
+app.get("/community", (req, res) => {
+// aquí declaro una ruta get explícita para responder directamente con el archivo html principal de la comunidad
+  res.sendFile(path.join(__dirname, "src", "views", "community", "index.html"));
+  // aquí ordeno enviar el archivo index html de la comunidad como respuesta a la petición del navegador
+});
+// aquí cierro la función de la ruta get explícita de la comunidad
+
+app.use(
   "/components",
   express.static(path.join(__dirname, "src", "views", "components")),
 );

@@ -78,8 +78,8 @@ export const renderNavbar = (activePage) => {
     <nav class="w-full bg-ily-dark/95 border-b border-ily-purple-300/20 backdrop-blur-md sticky top-0 z-40">
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center">
-          <a href="/" class="text-lg font-pixel-logo text-ily-purple-100 tracking-wider flex items-center gap-2">
-            <span class="text-ily-purple-300">I</span> lyverse
+        <a href="/" class="text-lg font-pixel-logo text-ily-purple-100 tracking-wider flex items-center gap-0 hover:text-ily-purple-300 transition-all">
+        <span class="text-ily-purple-300">I</span>lyverse
           </a>
         </div>
         <div class="hidden md:flex items-center gap-8 text-xs font-pixel-logo">
