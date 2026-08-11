@@ -556,10 +556,10 @@ window.addToCart = function(id) {
 // Remueve un producto del carrito de compras basándose en su ID
 window.removeFromCart = function(id) {
   // Filtra el carrito excluyendo el elemento que coincida con el ID proporcionado
-  cart = cart.filter(item => item.id !== id);
+  cart = cart.filter(item => item.id !== id); // aquí filtro el carrito de compras para conservar únicamente los productos cuyo identificador sea diferente al id que quiero eliminar, actualizando la lista resultante
   
   // Actualiza el almacenamiento local con el nuevo estado del carrito
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart)); // aquí guardo el carrito actualizado en el almacenamiento local del navegador convirtiendo el arreglo a formato texto para que no se pierda al recargar la página
   
   // Actualiza el contador numérico y la interfaz gráfica del carrito
   updateCartCount();
@@ -618,7 +618,7 @@ function updateCartUI() {
 
   // Muestra el monto total acumulado de la compra formateado a dos decimales
   if (cartTotalAmount) {
-    cartTotalAmount.innerText = total.toFixed(2);
+    cartTotalAmount.innerText = total.toFixed(2); // aquí actualizo el texto visible en la interfaz con el monto total de la compra, formateando el número a exactamente dos decimales para mostrarlo como un precio limpio
   }
 }
 
@@ -636,20 +636,20 @@ if (cartDrawerBtn && cartDrawer) { //cartDrawerBtn es la referencia al botón qu
 }
 
 // Agrega un escuchador al botón de cerrar del drawer para ocultarlo
-if (closeCartBtn && cartDrawer) {
-  closeCartBtn.addEventListener("click", () => {
-    cartDrawer.classList.add("hidden");
+if (closeCartBtn && cartDrawer) { // aquí compruebo que tanto el botón de cerrar como el panel lateral del carrito existan en el documento para evitar errores de referencia nula
+  closeCartBtn.addEventListener("click", () => { // aquí escucho el evento de clic sobre el botón de cerrar para ejecutar una acción cuando el usuario lo presione
+    cartDrawer.classList.add("hidden"); // aquí añado la clase hidden al panel lateral del carrito para ocultarlo visualmente de la pantalla
   });
 }
 
 // Obtiene referencias a los elementos involucrados en el flujo de simulación de pago (checkout)
-const checkoutBtn = document.getElementById("checkout-btn");
-const checkoutModal = document.getElementById("checkout-modal");
-const backToCartBtn = document.getElementById("back-to-cart-btn");
-const confirmPurchaseBtn = document.getElementById("confirm-purchase-btn");
+const checkoutBtn = document.getElementById("checkout-btn"); // aquí selecciono el botón de finalizar compra del DOM para capturar la acción del usuario
+const checkoutModal = document.getElementById("checkout-modal");// aquí selecciono la ventana flotante o modal de pago para poder mostrarla u ocultarla según las acciones del usuario
+const backToCartBtn = document.getElementById("back-to-cart-btn"); // aquí selecciono el botón para regresar al carrito y cerrar la ventana de pago
+const confirmPurchaseBtn = document.getElementById("confirm-purchase-btn");// aquí selecciono el botón final para confirmar y procesar la compra de los productos
 
 // Evento que valida el proceso de pago al hacer clic en proceder al checkout
-if (checkoutBtn && checkoutModal) {
+if (checkoutBtn && checkoutModal) { // aquí verifico que tanto el botón de pagar como el modal de pago existan en el DOM antes de asignarles lógica para evitar errores de null
   checkoutBtn.addEventListener("click", () => {
     // Si el carrito está vacío, muestra una alerta y detiene el proceso
     if (cart.length === 0) {
@@ -664,21 +664,21 @@ if (checkoutBtn && checkoutModal) {
 
 // Botón para regresar desde el modal de checkout nuevamente hacia el drawer del carrito
 if (backToCartBtn && checkoutModal && cartDrawer) { //backToCartBtn es la referencia al botón dentro del modal de checkout que permite al usuario regresar al drawer del carrito, y se obtiene mediante getElementById para poder asociarle un evento de clic que oculte el modal de pago y muestre nuevamente el panel lateral del carrito
-  backToCartBtn.addEventListener("click", () => {
-    checkoutModal.classList.add("hidden");
-    cartDrawer.classList.remove("hidden");
+  backToCartBtn.addEventListener("click", () => { // aquí escucho el evento de clic en el botón de regresar al carrito para cancelar la vista de pago
+    checkoutModal.classList.add("hidden"); // aquí añado la clase hidden al modal de pago para ocultar la ventana flotante de la pantalla
+    cartDrawer.classList.remove("hidden"); // aquí remuevo la clase hidden del panel lateral del carrito para volver a mostrarlo al usuario
   });
 }
 
 // Simula la confirmación exitosa de la compra, vaciando el carrito y limpiando el almacenamiento local
-if (confirmPurchaseBtn && checkoutModal) {
-  confirmPurchaseBtn.addEventListener("click", () => {
-    alert("¡Compra exitosa! Gracias por tu pedido en IlyStore.");
-    cart = [];
-    localStorage.removeItem("cart");
-    updateCartCount();
-    updateCartUI();
-    checkoutModal.classList.add("hidden");
+if (confirmPurchaseBtn && checkoutModal) {// aquí verifico que el botón de confirmar compra y el modal existan en el DOM antes de añadirles funcionalidad
+  confirmPurchaseBtn.addEventListener("click", () => {// aquí escucho el evento de clic en el botón de confirmar la compra para procesar el pedido del usuario
+    alert("¡Compra exitosa! Gracias por tu pedido en IlyStore."); // aquí muestro una alerta visual emergente indicando que la transacción se completó con éxito
+    cart = []; // aquí vacío por completo el arreglo del carrito en la memoria del programa dejándolo en cero elementos
+    localStorage.removeItem("cart"); // aquí elimino el carrito guardado en el almacenamiento local del navegador para limpiar los datos almacenados
+    updateCartCount(); // aquí actualizo el contador visual de productos para que refleje que el carrito está vacío
+    updateCartUI(); // aquí actualizo la interfaz visual del carrito de compras para vaciar la lista de artículos mostrados
+    checkoutModal.classList.add("hidden"); // aquí añado la clase hidden al modal de pago para cerrarlo y ocultarlo de la pantalla tras finalizar la compra
   });
 }
 
