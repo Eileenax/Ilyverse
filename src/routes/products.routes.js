@@ -12,16 +12,21 @@ const productController = require('../controllers/products.js');
 const router = Router();
 // aquí instancio un nuevo enrutador de express para registrar todas las rutas relacionadas con los productos
 
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ //diskStorage es un método de multer que permite configurar cómo y dónde se almacenarán los archivos subidos en el servidor. En este caso, se define un almacenamiento en disco con opciones personalizadas para la carpeta de destino y el nombre del archivo.
 // aquí configuro el almacenamiento de disco para multer con el fin de controlar la carpeta destino y el nombre del archivo
-  destination: (req, file, cb) => {
+  destination: (req, file, cb) => { //file representa el archivo que se está subiendo y cb es una función de callback que se llama para indicar la carpeta destino
     // aquí definimos la función para indicar la carpeta donde se guardarán físicamente los archivos subidos
-    cb(null, 'public/uploads/');
+    cb(null, 'public/uploads/'); //null es el primer argumento que indica que no hubo errores, y 'public/uploads/' es la ruta relativa donde se guardarán los archivos subidos
     // aquí pasamos la ruta de la carpeta pública de subidas asegurando que no haya errores iniciales
   },
   filename: (req, file, cb) => {
     // aquí definimos la función para personalizar el nombre con el que se guardará el archivo en el servidor
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    //uniqueSuffix es una cadena única generada combinando la marca de tiempo actual y un número aleatorio para evitar que se sobrescriban archivos con el mismo nombre
+    //sirve para generar un sufijo único e irrepetible para cada archivo que se sube al servidor. 
+    //combinamos una marca de tiempo en milisegundos con un número aleatorio,
+    // garantizando que si dos usuarios suben una imagen con el mismo nombre, 
+    //el sistema les asigne identificadores distintos y evitemos que una foto sobrescriba a la otra
     // aquí genero un sufijo único combinando la marca de tiempo actual y un número aleatorio para evitar duplicados
     cb(null, uniqueSuffix + path.extname(file.originalname));
     // aquí guardo el archivo combinando el sufijo único con su extensión original extraída de forma segura
@@ -29,7 +34,7 @@ const storage = multer.diskStorage({
 });
 // aquí cierro la configuración del almacenamiento de multer
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); //storage: storage es la configuración que le pasamos a multer para indicarle cómo manejar el almacenamiento de los archivos subidos. En este caso, usamos la configuración definida previamente con diskStorage para guardar los archivos en disco con nombres únicos y en la carpeta especificada.
 // aquí inicializo multer pasándole la configuración de almacenamiento personalizada para conservar las extensiones de las imágenes
 
 router.get('/', productController.getProducts);

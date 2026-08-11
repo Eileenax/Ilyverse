@@ -28,14 +28,17 @@ usersRouter.post("/", async (req, res) => {
 
     const existingUser = await User.findOne({
     // aquí busco en la base de datos si ya existe un usuario registrado con el mismo correo o nombre de usuario
+    //existingUser es una variable que almacena el resultado de la búsqueda en la base de datos. Si encuentra un usuario con el mismo correo o nombre de usuario, existingUser contendrá ese documento; si no encuentra ninguno, será null.
       $or: [{ email: email.toLowerCase() }, { username }],
       // aquí utilizo un operador lógico o para buscar coincidencia en minúsculas del correo o en el nombre de usuario
+      //$or es un operador lógico de MongoDB que permite combinar múltiples condiciones de búsqueda. En este caso, se utiliza para verificar si existe un usuario con el mismo correo electrónico (convertido a minúsculas) o con el mismo nombre de usuario. Si cualquiera de estas condiciones se cumple, la consulta devolverá ese usuario existente.
     });
 
     if (existingUser) {
     // aquí evalúo si la consulta encontró un usuario previamente registrado
       if (existingUser.email === email.toLowerCase()) {
       // aquí compruebo si la coincidencia exacta corresponde al correo electrónico
+      //toLowerCase() es un método de JavaScript que convierte una cadena de texto a minúsculas. En este caso, se utiliza para asegurar que la comparación del correo electrónico sea insensible a mayúsculas y minúsculas, evitando que se registren correos duplicados con diferente capitalización.
         return res
         // aquí preparo la respuesta de error si el correo ya está registrado
           .status(400)
@@ -112,25 +115,27 @@ usersRouter.post("/", async (req, res) => {
       // aquí incluyo el identificador y el rol de savedUser para evitar el error 500
       process.env.ACCESS_TOKEN_SECRET || "secreto_temporal",
       // aquí firmo el token usando la clave secreta del entorno o una por defecto
+      //"secreto_temporal" es una cadena de texto que se utiliza como clave secreta para firmar y verificar tokens JWT. En un entorno de producción, esta clave debería ser una cadena larga y segura almacenada en variables de entorno, pero aquí se proporciona un valor por defecto para desarrollo o pruebas locales.
       { expiresIn: "1d" }
       // aquí configuro una expiración de un día para el token de registro
     );
 
     // aquí construimos el enlace de verificación para enviarlo por correo
     const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify.html?id=${userId}&token=${token}`;
+    //frontendUrl es una variable de entorno que contiene la URL base del frontend de la aplicación. Si no está definida, se utiliza "http://localhost:5173" como valor por defecto para entornos de desarrollo local. Esta URL se combina con la ruta "/verify.html" y los parámetros de consulta "id" y "token" para crear un enlace completo que el usuario puede usar para verificar su cuenta.
 
     // aquí enviamos el correo electrónico utilizando la API de EmailJS desde el backend
     if (process.env.EMAILJS_SERVICE_ID && process.env.EMAILJS_TEMPLATE_ID && process.env.EMAILJS_PUBLIC_KEY) {
       try {
         await axios.post("https://api.emailjs.com/api/v1.0/email/send", {
-          service_id: process.env.EMAILJS_SERVICE_ID,
-          template_id: process.env.EMAILJS_TEMPLATE_ID,
-          user_id: process.env.EMAILJS_PUBLIC_KEY,
-          accessToken: process.env.EMAILJS_PRIVATE_KEY,
-          template_params: {
-            to_email: savedUser.email,
-            to_name: savedUser.username,
-            verification_url: verificationUrl,
+          service_id: process.env.EMAILJS_SERVICE_ID, // aquí utilizo la variable de entorno para el ID del servicio de EmailJS
+          template_id: process.env.EMAILJS_TEMPLATE_ID, // aquí utilizo la variable de entorno para el ID de la plantilla de EmailJS
+          user_id: process.env.EMAILJS_PUBLIC_KEY, // aquí utilizo la variable de entorno para la clave pública de EmailJS
+          accessToken: process.env.EMAILJS_PRIVATE_KEY, // aquí utilizo la variable de entorno para la clave privada de EmailJS
+          template_params: { // aquí paso los parámetros que se usarán en la plantilla de correo electrónico
+            to_email: savedUser.email, // aquí asigno el correo electrónico del usuario guardado para enviarle el mensaje
+            to_name: savedUser.username, // aquí asigno el nombre de usuario del usuario guardado para personalizar el mensaje
+            verification_url: verificationUrl, // aquí incluyo el enlace de verificación generado para que el usuario pueda verificar su cuenta
           },
         });
       } catch (emailError) {

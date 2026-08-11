@@ -22,19 +22,19 @@ const token = localStorage.getItem("token");
 const userRaw = localStorage.getItem("user");
 // aquí recupero los datos del usuario en formato de texto desde el almacenamiento local del navegador
 
-if (token && userRaw) {
+if (token && userRaw) { //userRaw es la información del usuario en formato de texto plano que se almacena en el navegador y token es la cadena de autenticación que valida la sesión activa
 // aquí evalúo si tanto el token como los datos del usuario existen para determinar si hay una sesión activa
   try {
   // aquí abro un bloque try para intentar procesar y mostrar la información de la sesión de forma segura
-    const user = JSON.parse(userRaw);
+    const user = JSON.parse(userRaw); //.parse convierte la cadena de texto del usuario en un objeto de javascript para poder acceder a sus propiedades y mostrarlas en la interfaz
     // aquí convierto los datos del usuario de texto plano a un objeto de javascript utilizable
     
-    if (publicHome) publicHome.classList.add("hidden");
+    if (publicHome) publicHome.classList.add("hidden"); 
     // aquí oculto la vista pública añadiéndole la clase css de ocultamiento si el elemento existe
     if (privateHome) privateHome.classList.remove("hidden");
     // aquí muestro la vista privada eliminando la clase css de ocultamiento si el elemento existe
 
-    if (userNameSpan) {
+    if (userNameSpan) { //userNameSpan es el elemento de texto donde mostraré el nombre del usuario logueado y verifico que exista antes de intentar modificarlo
     // aquí compruebo si el elemento para mostrar el nombre del usuario existe en el documento
       userNameSpan.textContent = user.username || user.nombre || user.email || "Usuario";
       // aquí inserto el nombre de usuario, nombre alternativo, correo o un texto por defecto dentro del elemento seleccionado

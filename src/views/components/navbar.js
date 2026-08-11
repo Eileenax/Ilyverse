@@ -8,7 +8,9 @@ export const renderNavbar = (activePage) => {
   const publicPages = ["home", "login", "signup", "verify"];
   // aquí defino una lista con las páginas públicas permitidas para que cualquier usuario pueda visitarlas sin iniciar sesión
 
-  if (!token && !publicPages.includes(activePage)) {
+  if (!token && !publicPages.includes(activePage)) { //activePage es un parámetro que indica la página actual y se compara con la lista de páginas públicas para determinar si el usuario tiene acceso
+  // aquí compruebo si el usuario no tiene token y está intentando acceder a una ruta privada que requiere estar autenticado
+    window.location.replace("/");
   // aquí compruebo si el usuario no tiene token y está intentando acceder a una ruta privada que requiere estar autenticado
     window.location.replace("/");
     // aquí reemplazo la entrada actual en el historial del navegador con la página principal para evitar que la flecha atrás vuelva a la tienda
@@ -106,8 +108,9 @@ export const renderNavbar = (activePage) => {
   const userDropdown = document.getElementById("user-dropdown");
   // hier selecciono el contenedor desplegable del menú de usuario
 
-  if (userMenuBtn && userDropdown) {
+  if (userMenuBtn && userDropdown) { //userMenuBtn y userDropdown son elementos que solo existen si el usuario está autenticado, por lo que verifico su existencia antes de agregar eventos
   // aquí compruebo si ambos elementos existen en la vista actual antes de agregarles eventos
+  // aquí escucho el evento click en el botón del menú para alternar su visibilidad
     userMenuBtn.addEventListener("click", (e) => {
     // aquí escucho el evento click en el botón del menú para alternar su visibilidad
       e.stopPropagation();

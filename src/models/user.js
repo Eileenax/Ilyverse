@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
 
     // Estado de verificación de la cuenta (por ejemplo, confirmación por email)
     verified: {
-        type: Boolean,
+        type: Boolean, //boolean para indicar si el usuario ha verificado su cuenta
         default: false // Todo usuario nuevo inicia sin verificar por defecto
     },
 
@@ -23,10 +23,12 @@ const userSchema = new mongoose.Schema({
 });
 
 // Configuración de la transformación a JSON cuando se envían respuestas al cliente/frontend
-userSchema.set("toJSON", {
+userSchema.set("toJSON", { //.set("toJSON", {...}) es un método de Mongoose que permite definir cómo se transformará un documento de la base de datos a un objeto JSON cuando se envíe como respuesta al cliente. Esto es útil para ocultar información sensible y formatear los datos antes de enviarlos.
     transform: (document, returnedObject) => {
         // Asignamos una propiedad 'id' limpia en formato String convirtiendo el ObjectId nativo
         returnedObject.id = returnedObject._id.toString();
+        //returnedObject.id contendrá el valor del ObjectId convertido a cadena de texto, lo que facilita su uso en el frontend y evita exponer la estructura interna de MongoDB.
+        //y objectId es un tipo de dato especial que MongoDB utiliza para identificar de manera única cada documento en una colección. Al convertirlo a string, se hace más legible y manejable para el frontend.
 
         // Limpiamos la respuesta eliminando campos internos y sensibles
         delete returnedObject._id;          // Eliminamos la propiedad _id nativa

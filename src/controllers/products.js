@@ -18,15 +18,27 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 // aquí compilo o recupero el modelo de producto usando mongoose para prevenir sobreescrituras en caliente
-
+//basicamente si ya existe un modelo llamado Product, lo reutiliza; de lo contrario, crea uno nuevo con el esquema definido
 exports.getProducts = async (req, res) => {
-// aquí exporto una función asíncrona para obtener y listar todos los productos guardados
+// aquí exporto una función asíncrona para obtener y listar todos los productos guardados con soporte para filtrar por categoría
   try {
   // aquí abro un bloque try para manejar posibles errores en la consulta general
-    const products = await Product.find();
-    // aquí consulto la base de datos para buscar todos los documentos de productos existentes
+    const { category } = req.query;
+    // aquí extraigo el parámetro category de la url si es que el cliente lo envió
+
+    let filtro = {};
+    // aquí inicializo un objeto de filtro vacío para la consulta a la base de datos
+
+    if (category) {
+    // aquí verifico si se especificó una categoría en la petición http
+      filtro.category = category;
+      // aquí asigno la categoría al objeto de filtro para buscar solo los coincidentes
+    }
+
+    const products = await Product.find(filtro);
+    // aquí consulto la base de datos buscando todos los productos o filtrando por categoría según corresponda
     res.json(products);
-    // aquí devuelvo la lista completa de productos en formato json
+    // aquí devuelvo la lista resultante de productos en formato json
   } catch (error) {
   // aquí capturo cualquier fallo ocurrido al intentar buscar los productos
     res.status(500).json({ error: "Error al obtener los productos" });
@@ -64,6 +76,8 @@ exports.createProduct = async (req, res) => {
     // aquí verifico si el usuario adjuntó un archivo de imagen en la petición
       imagePath = `/uploads/${req.file.filename}`;
       // aquí construyo la ruta de acceso al archivo guardado por multer
+      //Esta instrucción utiliza una plantilla de texto para generar la ruta relativa del archivo multimedia.
+      //toma el nombre único que Multer le asignó a la imagen al subirla y lo concatena con la carpeta /uploads/. Esa ruta resultante es la que guardamos en MongoDB para que la aplicación pueda mostrar la imagen de forma dinámica en la tienda 
     }
 
     const newProduct = new Product({

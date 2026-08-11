@@ -73,6 +73,13 @@ A continuación se detallan los endpoints disponibles para consumir y probar en 
 * **Acceso:** Protegido (Requiere Token de Administrador)
 * **Descripción:** Borra permanentemente el registro del producto de la base de datos.
 
+### 6. Filtrar productos por Categoría
+
+* **Método:** `GET`
+* **Ruta:** `/api/products?category=<nombre_categoria> (Ejemplo: /api/products?category=ROPA)`
+* **Acceso:** Público
+* **Descripción:** Permite consultar y filtrar el inventario mediante parámetros de consulta (Query Parameters), devolviendo un arreglo JSON únicamente con los productos que pertenecen a la categoría especificada.
+
 ---
 
 ## ⚙️ Guía de Instalación y Ejecución Local
